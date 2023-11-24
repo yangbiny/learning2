@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>java21</module>
+    <module>spring</module>
   </modules>
 
   <properties>
