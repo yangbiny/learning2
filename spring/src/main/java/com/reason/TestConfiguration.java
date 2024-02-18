@@ -17,7 +17,6 @@ public class TestConfiguration {
       ObjectProvider<TestInterface> testInterfaces
   ) {
     List<TestInterface> list = testInterfaces.stream().toList();
-    System.out.println(list);
     return "";
   }
 
