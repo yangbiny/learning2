@@ -5,6 +5,7 @@ package com.reason.basic;
  */
 public class ConfigTest1 {
 
+  //@Resource
   private ConfigTest configTest;
 
 
@@ -12,7 +13,4 @@ public class ConfigTest1 {
     return configTest;
   }
 
-  public void setConfigTest(ConfigTest configTest) {
-    this.configTest = configTest;
-  }
 }

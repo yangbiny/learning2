@@ -2,6 +2,7 @@ package com.reason;
 
 
 import com.reason.aspect.AspectBean;
+import com.reason.basic.Config;
 import com.reason.basic.ConfigTest;
 import com.reason.basic.ConfigTest1;
 import com.reason.jpa.ImFriend;
@@ -12,6 +13,8 @@ import com.reason.redis.RedisStreamTester;
 import java.io.IOException;
 import java.util.List;
 import org.apache.tomcat.util.threads.VirtualThreadExecutor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.redis.connection.stream.MapRecord;
@@ -20,7 +23,21 @@ import org.springframework.data.redis.connection.stream.RecordId;
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    redis();
+
+    var context = new AnnotationConfigApplicationContext(Config.class);
+    ConfigTest configTest = context.getBean(ConfigTest.class);
+
+    ConfigTest1 configTest1 = configTest.getConfigTest1();
+
+    ConfigTest1 configTest11 = context.getBean("configTest1", ConfigTest1.class);
+    ConfigTest1 configTest12 = context.getBean("configTest12", ConfigTest1.class);
+
+
+    System.out.println(configTest);
+
+    SpringApplication application = new SpringApplication(Main.class);
+    WebApplicationType webApplicationType = application.getWebApplicationType();
+    System.out.println(webApplicationType);
   }
 
 
