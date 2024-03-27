@@ -1,5 +1,7 @@
 package com.reason.lock;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -7,15 +9,45 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class CustomLockTest {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
 
-    ReentrantLock reentrantLock = new ReentrantLock();
+    CustomReentrantLock reentrantLock = new CustomReentrantLock();
+    Condition condition = reentrantLock.newCondition();
 
-    boolean b = reentrantLock.tryLock();
-    System.out.println(b);
+    reentrantLock.lock();
 
-    boolean b2 = reentrantLock.tryLock();
-    System.out.println(b2);
+    reentrantLock.lock();
+
+    reentrantLock.lock();
+
+    int locks = reentrantLock.locks();
+    System.out.println(locks);
+
+    new Thread(() -> {
+      reentrantLock.lock();
+      try {
+        System.out.println("wait");
+        condition.await();
+        System.out.println("do something");
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      } finally {
+        reentrantLock.unlock();
+      }
+    }).start();
+
+    Thread.sleep(10 * 1000);
+
+    new Thread(() -> {
+      reentrantLock.lock();
+      try {
+        System.out.println("signal");
+        condition.signal();
+      } finally {
+        reentrantLock.unlock();
+      }
+
+    }).start();
 
 
   }

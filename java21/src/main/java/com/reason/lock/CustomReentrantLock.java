@@ -14,11 +14,28 @@ public class CustomReentrantLock implements Lock {
 
   abstract static class Sync extends AbstractQueuedSynchronizer {
 
+    @Override
+    protected boolean isHeldExclusively() {
+      return getExclusiveOwnerThread() == Thread.currentThread();
+    }
+
+
+    protected int getLocks() {
+      if (isHeldExclusively()) {
+        return getState();
+      }
+      throw new IllegalMonitorStateException();
+    }
+
+
     /**
      * 尝试获取锁。
      */
     protected abstract boolean tryLock(int acquires);
 
+    protected Condition newCondition() {
+      return new ConditionObject();
+    }
 
     protected void lock(int acquires) {
       if (!tryLock(acquires)) {
@@ -117,6 +134,10 @@ public class CustomReentrantLock implements Lock {
     this.sync = fair ? new FairSync() : new NonfairSync();
   }
 
+  public int locks() {
+    return sync.getLocks();
+  }
+
 
   @Override
   public void lock() {
@@ -153,6 +174,6 @@ public class CustomReentrantLock implements Lock {
 
   @Override
   public Condition newCondition() {
-    return null;
+    return this.sync.newCondition();
   }
 }
